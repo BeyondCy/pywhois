@@ -2,9 +2,16 @@
 # -*- coding: utf-8 -*-
 
 import socket
-import re 
+import configparser
+import re
 import chardet
- 
+
+config = configparser.ConfigParser()
+config.read('whois_servers.ini')
+DOMAIN_WHOIS_SERVERS = config['domain']
+IP_WHOIS_SERVERS = config['ip']
+
+
 def send(keyword,server='whois.iana.org',port=43):
 
    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -21,12 +28,19 @@ def send(keyword,server='whois.iana.org',port=43):
         data = b''.join(buffer)
         return data
 
-def query(keyword):
-    info  = send(keyword=keyword)
-    temp = re.search(r'whois:\s*([A-Za-z0-9\_\-\.]+)',str(info,encoding=chardet.detect(info)['encoding']))
-    if temp:
-        whois_server = temp.group(1)
-        info  = send(keyword=keyword,server=whois_server)
-        return info
+def query(keyword,type):
+
+    if type == 'domain':
+        TLD = keyword.split('.')[-1]
+        whois_server = DOMAIN_WHOIS_SERVERS.get(TLD,None)
+    elif type == 'ip':
+        Prefix = keyword.split('.')[0]
+        whois_server = IP_WHOIS_SERVERS.get(Prefix,None)
     else:
-        return info
+        return None
+
+    if whois_server:
+        info  = send(keyword=keyword,server=whois_server)
+    else:
+        info  = send(keyword=keyword)
+    return info
