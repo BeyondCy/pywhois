@@ -4,7 +4,17 @@
 ### Usage
 
 ```
+usage: whois.py [-h] [-p ipv4] [-d domain] [-v] [--update]
 
+Search whois information of IPv4/domain
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -p ipv4, --ipv4 ipv4  search ipv4 whois information
+  -d domain, --domain domain
+                        search domain whois information
+  -v, --version         print version
+  --update              update whois servers
 
 ```
 
