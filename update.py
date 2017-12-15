@@ -6,7 +6,7 @@ from io import StringIO
 
 CONFIG = configparser.ConfigParser()
 CONFIG['domain'] = {}
-CONFIG['ip'] = {}
+CONFIG['ipv4'] = {}
 CACHE_PATH = 'cache'
 if not os.path.exists(CACHE_PATH):
     os.mkdir(CACHE_PATH)
@@ -53,7 +53,7 @@ def update():
     data = download(filename=os.path.basename(IPv4_URL),url=IPv4_URL)
     reader = csv.DictReader(StringIO(str(data, encoding='utf-8')))
     for row in reader:
-        CONFIG['ip'][str(int(row['Prefix'].split('/')[0]))] = row['WHOIS']
+        CONFIG['ipv4'][str(int(row['Prefix'].split('/')[0]))] = row['WHOIS']
         print('Update %s whois server' % (row['Prefix'],))
 
     with open('whois_servers.ini', 'w') as configfile:
